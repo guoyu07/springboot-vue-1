@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:ORCL
+    username: scott
+    password: scott
+  devtools:
+    restart:
+      enabled: true #热部署生效
+      additional-paths: src/main #设置重启的目录
+#      exclude: static #设置不重启的目录
+mybatis:
+  type-aliases-package: com.example.model
+  mapper-locations: classpath:mybatis/mapper/*Mapper.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+  check-config-location: true
+logging:
+  level: debug
