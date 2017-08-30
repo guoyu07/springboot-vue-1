@@ -5,6 +5,7 @@ import router from './router'
 import ElementUI from 'element-ui'
 import VueProgressBar from 'vue-progressbar'
 import VueQuillEditor from 'vue-quill-editor'
+import axios from 'axios'
 
 import App from './App.vue'
 import './assets/global.css'
@@ -15,6 +16,8 @@ import $ from 'jquery'
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.use(VueQuillEditor);
+
+Vue.prototype.$axios = axios;
 
 // 进度条
 Vue.use(VueProgressBar, {

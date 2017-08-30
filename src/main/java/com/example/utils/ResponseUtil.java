@@ -7,23 +7,23 @@ package com.example.utils;
  */
 public class ResponseUtil {
 
-    public static Object success(Integer code, String msg, Object data) {
+    public static Response success(Integer code, String msg, Object data) {
         return new Response(code, msg, data);
     }
 
-    public static Object success(Object data) {
+    public static Response success(Object data) {
         return success(200, "请求成功!", data);
     }
 
-    public static Object success() {
+    public static Response success() {
         return success(200, "请求成功!", null);
     }
 
-    public static Object error() {
+    public static Response error() {
         return error(500, "服务器错误!");
     }
 
-    public static Object error(Integer code, String msg) {
+    public static Response error(Integer code, String msg) {
         return new Response(code, msg);
     }
 }

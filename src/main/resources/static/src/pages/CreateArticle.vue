@@ -121,7 +121,11 @@
         this.$refs[articleForm].validate((valid) => {
           var flag = this.validateContent();
           if (valid && !flag) {
-            alert('submit!');
+            this.$axios.get('/api/employee/getEmployees.do').then(function (response) {
+              console.log(response);
+            }).catch(function (error) {
+              console.log(error);
+            });
           } else {
             this.$message.error('错了哦，这是一条错误消息!');
             return false;
