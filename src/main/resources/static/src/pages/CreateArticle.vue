@@ -10,10 +10,10 @@
       </el-form-item>
 
       <el-form-item label="类型" prop="type">
-        <el-select v-model="article.type" placeholder="请选择文章类型">
-          <el-option label="Java" value="Java"></el-option>
-          <el-option label="JavaScript" value="JavaScript"></el-option>
-        </el-select>
+        <el-radio-group v-model="article.type">
+          <el-radio label="原创"></el-radio>
+          <el-radio label="转载"></el-radio>
+        </el-radio-group>
       </el-form-item>
 
       <el-form-item label="标签" prop="tag">
@@ -21,9 +21,8 @@
       </el-form-item>
 
       <el-form-item label="分类" prop="category">
-        <el-select v-model="article.category" placeholder="请选择文章分类">
-          <el-option label="Java" value="Java"></el-option>
-          <el-option label="JavaScript" value="JavaScript"></el-option>
+        <el-select v-model="article.category.id" placeholder="请选择文章分类">
+          <el-option v-for="item in categorys" :label="item.name" :value="item.id" :key="item.id"></el-option>
         </el-select>
       </el-form-item>
 
@@ -57,46 +56,18 @@
         return this.$refs.content.quill
       }
     },
-    data() {
-      return {
-        editorOption: {},
-        contentError: false,
-        article: {
-          title: '',
-          author: '',
-          type: '',
-          tag: '',
-          category: '',
-          content: ''
-        },
-        rules: {
-          title: [
-            {required: true, message: '请输入文章标题', trigger: 'blur, change'},
-          ],
-          author: [
-            {required: true, message: '请输入作者', trigger: 'blur, change'},
-          ],
-          type: [
-            {required: true, message: '请选择文章类型', trigger: 'blur, change'},
-          ],
-          tag: [
-            {required: true, message: '请输入标签, 每个以`,`分割', trigger: 'blur, change'},
-          ],
-          category: [
-            {required: true, message: '请选择分类', trigger: 'blur, change'},
-          ],
-//          content: [
-//            {required: true, message: '请输入文章正文', trigger: 'blur, change'},
-//          ],
-
-        },
-      }
+    created: function () {
+      this.$axios.get('/api/category/getCategorys.do').then((res) => {
+        this.categorys = res.data;
+      }).catch((error) => {
+        console.log(error);
+      })
     },
     methods: {
       onEditorReady(editor) {
         $('.articleForm .ql-container')
-          .height('200px')
-          .css('border', '1px solid #CCCCCC');
+        .height('200px')
+        .css('border', '1px solid #CCCCCC');
       },
       onEditorBlur(editor) {
         this.validateContent();
@@ -120,24 +91,60 @@
       onSubmit(articleForm) {
         this.$refs[articleForm].validate((valid) => {
           var flag = this.validateContent();
+          console.log(this.article);
+          console.log(typeof this.article.category.id);
           if (valid && !flag) {
-            this.$axios.get('/api/employee/getEmployees.do').then(function (response) {
+            this.$axios.post('/api/article/addArticle.do', this.article).then((response) => {
               console.log(response);
-            }).catch(function (error) {
+            }).catch((error) => {
               console.log(error);
-            });
+            })
           } else {
-            this.$message.error('错了哦，这是一条错误消息!');
+            this.$message.error('错了哦!');
             return false;
           }
         });
       },
     },
-
+    data() {
+      return {
+        categorys: [],
+        editorOption: {},
+        contentError: false,
+        article: {
+          title: '',
+          author: '',
+          type: '',
+          tag: '',
+          category: {
+            id: null,
+            name: ''
+          },
+          content: ''
+        },
+        rules: {
+          title: [
+            {required: true, message: '请输入文章标题', trigger: 'blur, change'},
+          ],
+          author: [
+            {required: true, message: '请输入作者', trigger: 'blur, change'},
+          ],
+          type: [
+            {required: true, message: '请选择文章类型', trigger: 'blur, change'},
+          ],
+          tag: [
+            {required: true, message: '请输入标签, 每个以`,`分割', trigger: 'blur, change'},
+          ],
+          category: [
+            {type: 'number', required: true, message: '请选择分类', trigger: 'blur, change'},
+          ],
+        },
+      }
+    },
   }
 </script>
 
-<style scoped>
+<style lang="css" rel="stylesheet/less" scoped>
   .articleForm {
     margin: 20px 15%;
   }

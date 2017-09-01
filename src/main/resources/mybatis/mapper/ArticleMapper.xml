@@ -1,7 +1,57 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.dao.ArticleDao">
+    <sql id="articleColumn">
+        id, title, author, type, tag, category, content, drafts, recycle
+    </sql>
+
+    <select id="getArticles" resultMap="getArticle">
+        SELECT
+        <include refid="articleColumn"/>
+        FROM article
+    </select>
+
+    <select id="getArticle" parameterType="Article" resultMap="getArticle">
+        SELECT
+        <include refid="articleColumn"/>
+        FROM article WHERE id = #{id}
+    </select>
+
     <insert id="addArticle" parameterType="Article">
-        INSERT INTO article VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        INSERT INTO article (id, title, author, type, tag, category, content, create_time, drafts, recycle)
+        VALUES (#{id}, #{title}, #{author},#{type.id},#{tag},#{category.id},#{content},#{create_time},#{drafts},#{recycle},)
     </insert>
+
+    <update id="modifyArticle" parameterType="Article">
+        UPDATE article SET
+            title       = #{title},
+            author      = #{author},
+            type        = #{type.id},
+            tag         = #{tag},
+            category    = #{category.id},
+            content     = #{content},
+            modify_time = #{modify_time},
+            drafts      = #{drafts},
+            recycle     = #{recycle},
+        WHERE id        = #{id}
+    </update>
+
+    <resultMap id="getArticle" type="Article">
+        <id column="id"           property="id"/>
+        <result column="author"   property="author"/>
+        <result column="tag"      property="tag"/>
+        <result column="content"  property="content"/>
+        <result column="drafts"   property="drafts"/>
+        <result column="recycle"  property="recycle"/>
+
+        <association property="articleType" javaType="ArticleType">
+            <id column="id"       property="id"/>
+            <result column="name" property="name"/>
+        </association>
+
+        <association property="category" javaType="Category">
+            <id column="id"       property="id"/>
+            <result column="name" property="name"/>
+        </association>
+    </resultMap>
 </mapper>
