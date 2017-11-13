@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 @Aspect
 @Component
 public class WebLogger {
-    private static Logger logger = LoggerFactory.getLogger(WebLogger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebLogger.class);
 
     @Pointcut("execution(public * com.example.controller.*.*(..))")
     public void pointcut() {
@@ -34,19 +34,19 @@ public class WebLogger {
         HttpServletRequest request = attributes.getRequest();
 
         try {
-            logger.info("【URL】: {}", request.getRequestURL().toString());
-            logger.info("【HTTP_METHOD】: {}", request.getMethod());
-            logger.info("【IP】: {}", request.getRemoteAddr());
-            logger.info("【QUERY_PARAMS】: {}", request.getQueryString());
-            logger.info("【CLASS_METHOD】: {}", joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-            logger.info("【ARGS】: {}", joinPoint.getArgs());
+            LOGGER.info("【URL】: {}", request.getRequestURL().toString());
+            LOGGER.info("【HTTP_METHOD】: {}", request.getMethod());
+            LOGGER.info("【IP】: {}", request.getRemoteAddr());
+            LOGGER.info("【QUERY_PARAMS】: {}", request.getQueryString());
+            LOGGER.info("【CLASS_METHOD】: {}", joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
+            LOGGER.info("【ARGS】: {}", joinPoint.getArgs());
 
             obj = joinPoint.proceed(joinPoint.getArgs());
 
-            logger.info("【RESPONSE】: {}", obj.toString());
+            LOGGER.info("【RESPONSE】: {}", obj.toString());
 
         } catch (Exception e) {
-            logger.error("【ERROR】: {}", e.getMessage());
+            LOGGER.error("【ERROR】: {}", e.getMessage());
         }
 
         return obj;
